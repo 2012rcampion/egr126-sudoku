@@ -24,4 +24,13 @@ void move_cursor(int column, int row);
 void write_string(const std::string & str, int column, int row);
 void write_character(char c, int column, int row);
 
+enum format {
+	inverted = 1,
+	not_inverted = 2,
+	bold = 4,
+	not_bold = 8
+};
+
+void format_character(int format, int column, int row);
+
 #endif

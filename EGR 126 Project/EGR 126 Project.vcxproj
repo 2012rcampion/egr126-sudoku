@@ -116,10 +116,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="console_io.cpp" />
+    <ClCompile Include="drawing.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console_io.h" />
+    <ClInclude Include="drawing.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="template.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

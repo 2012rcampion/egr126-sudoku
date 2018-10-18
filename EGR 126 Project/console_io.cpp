@@ -5,6 +5,12 @@
 static HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
 static HANDLE output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
+const WORD foreground_color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+const WORD background_color = 0;
+const WORD bold_color = FOREGROUND_RED | FOREGROUND_INTENSITY;
+
+const WORD color_mask = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+
 int get_key(int timeout) {
 	if(timeout < 0) {
 		timeout = INFINITE;
@@ -61,6 +67,9 @@ void setup_window(const std::string & title, int width, int height) {
 	SetConsoleWindowInfo(output_handle, TRUE, &window_size);
 	COORD buffer_size = { width, height };
 	SetConsoleScreenBufferSize(output_handle, buffer_size);
+	DWORD attrs_written;
+	WORD attr = foreground_color | background_color;
+	FillConsoleOutputAttribute(output_handle, attr, width * height, { 0,0 }, &attrs_written);
 }
 
 void move_cursor(int column, int row) {
@@ -75,7 +84,7 @@ void write_string(const std::string & str, int column, int row) {
 	position.X = column;
 	position.Y = row;
 	DWORD chars_written;
-	WriteConsoleOutputCharacter(output_handle, str.c_str(), str.size(), position, &chars_written);
+	assert(WriteConsoleOutputCharacter(output_handle, str.c_str(), str.size(), position, &chars_written));
 }
 
 void write_character(char c, int column, int row) {
@@ -83,5 +92,32 @@ void write_character(char c, int column, int row) {
 	position.X = column;
 	position.Y = row;
 	DWORD chars_written;
-	WriteConsoleOutputCharacter(output_handle, &c, 1, position, &chars_written);
+	assert(WriteConsoleOutputCharacter(output_handle, &c, 1, position, &chars_written));
+}
+
+void format_character(int format, int column, int row) {
+	COORD position;
+	position.X = column;
+	position.Y = row;
+	DWORD attr_len;
+	WORD attr;
+	assert(ReadConsoleOutputAttribute(output_handle, &attr, 1, position, &attr_len));
+
+	if(format & format::inverted) {
+		attr |= COMMON_LVB_REVERSE_VIDEO;
+	}
+	else if(format & format::not_inverted) {
+		attr &= ~COMMON_LVB_REVERSE_VIDEO;
+	}
+
+	if(format & format::bold) {
+		attr &= ~color_mask;
+		attr |= bold_color;
+	}
+	else if (format & format::not_bold) {
+		attr &= ~color_mask;
+		attr |= foreground_color;
+	}
+
+	assert(WriteConsoleOutputAttribute(output_handle, &attr, 1, position, &attr_len));
 }

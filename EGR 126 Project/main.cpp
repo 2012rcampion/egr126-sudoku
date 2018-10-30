@@ -3,11 +3,20 @@
 #include <string>
 #include <fstream>
 #include <chrono>
+#include "Board.h"
 
 const int height = 25;
 const int width = 39;
 
 int main(int argc, char* argv[]) {
+
+	Board b;
+	if (b.solved()) {
+		// you win
+	}
+	else {
+		// try again
+	}
 
 	setup_window("Sudoku", width, height);
 

@@ -21,7 +21,7 @@ void Display::draw() {
 				if(value > 0) {
 					c = value + '0';
 				}
-				draw_cell(c, row, col);
+				draw_cell(c, row, col, clues.get(row, col) != 0);
 			}
 		}
 		board_changed = false;

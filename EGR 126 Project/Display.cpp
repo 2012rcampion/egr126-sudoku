@@ -13,7 +13,8 @@ void Display::draw() {
 		draw_cursor(cursor_row, cursor_col);
 		cursor_moved = false;
 	}
-	if(board_changed) {
+	if(board_changed || cursor_moved) {
+		int selection = guess.get(cursor_row, cursor_col);
 		for(int row = 0; row < Board::size; ++row) {
 			for(int col = 0; col < Board::size; ++col) {
 				int value = guess.get(row, col);
@@ -22,6 +23,7 @@ void Display::draw() {
 					c = value + '0';
 				}
 				draw_cell(c, row, col, clues.get(row, col) != 0);
+				highlight_cell(row, col, selection != 0 && value == selection);
 			}
 		}
 		board_changed = false;

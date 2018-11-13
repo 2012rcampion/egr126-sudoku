@@ -1,26 +1,33 @@
 #include "Display.h"
 
-Display::Display() : cursor_row(0), cursor_col(0) {
+Display::Display() : cursor_row(0), cursor_col(0), board_changed(true), cursor_moved(true) {
 	const int height = 25;
 	const int width = 39;
 	setup_window("Sudoku", width, height);
 	draw_board();
-
 	new_game();
 }
 
 void Display::draw() {
-	draw_cursor(cursor_row, cursor_col);
-	for(int row = 0; row < Board::size; ++row) {
-		for(int col = 0; col < Board::size; ++col) {
-			int value = guess.get(row, col);
-			char c = ' ';
-			if(value > 0) {
-				c = value + '0';
-			}
-			draw_cell(c, row, col);
-		}
+	if(cursor_moved) {
+		draw_cursor(cursor_row, cursor_col);
+		cursor_moved = false;
 	}
+	if(board_changed) {
+		for(int row = 0; row < Board::size; ++row) {
+			for(int col = 0; col < Board::size; ++col) {
+				int value = guess.get(row, col);
+				char c = ' ';
+				if(value > 0) {
+					c = value + '0';
+				}
+				draw_cell(c, row, col);
+			}
+		}
+		board_changed = false;
+	}
+	int seconds = std::chrono::ceil<std::chrono::seconds>(clock::now() - start_time).count();
+	draw_time(seconds);
 }
 
 bool Display::handle_input(int k) {
@@ -28,19 +35,32 @@ bool Display::handle_input(int k) {
 		case key::quit:
 			return true;
 		case key::up:
-			if(cursor_row > 0) { --cursor_row; }
+			if(cursor_row > 0) {
+				--cursor_row;
+				cursor_moved = true;
+			}
 			break;
 		case key::down:
-			if(cursor_row < Board::size - 1) { ++cursor_row; }
+			if(cursor_row < Board::size - 1) {
+				++cursor_row;
+				cursor_moved = true;
+			}
 			break;
 		case key::left:
-			if(cursor_col > 0) { --cursor_col; }
+			if(cursor_col > 0) {
+				--cursor_col;
+				cursor_moved = true;
+			}
 			break;
 		case key::right:
-			if(cursor_col < Board::size - 1) { ++cursor_col; }
+			if(cursor_col < Board::size - 1) {
+				++cursor_col;
+				cursor_moved = true;
+			}
 			break;
 		case key::erase:
 			guess.set(cursor_row, cursor_col, 0);
+			board_changed = true;
 			break;
 		case key::restart:
 			reset();
@@ -52,6 +72,7 @@ bool Display::handle_input(int k) {
 			if('1' <= k && k <= '9') {
 				guess.set(cursor_row, cursor_col, k - '0');
 			}
+			board_changed = true;
 			break;
 	}
 	return false;
@@ -59,11 +80,12 @@ bool Display::handle_input(int k) {
 
 void Display::reset() {
 	guess = clues;
+	board_changed = true;
 }
 
 void Display::new_game() {
-	Board empty;
-	clues = empty;
+	clues = Board::random();
+	start_time = clock::now();
 	reset();
 }
 
@@ -122,7 +144,6 @@ int col = 0;
 			draw_cursor(row, col);
 			move = false;
 		}
-		int seconds = std::chrono::ceil<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count();
-		draw_time(seconds);
+
 	}
 */

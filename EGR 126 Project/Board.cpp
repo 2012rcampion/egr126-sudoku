@@ -146,17 +146,11 @@ int Board::solution_count(int i, int count) {
 		taken |= bit(get(j, col));
 		taken |= bit(get_box(box, j));
 	}
-	std::array<int, size> xs;
-	auto x = xs.begin();
-	for(int j = 1; j <= size; ++j) {
-		if(!(taken & bit(j))) {
-			*x++ = j;
+	for(int x = 1; x <= size; ++x) {
+		if(taken & bit(x)) {
+			continue;
 		}
-	}
-	auto xend = x;
-	std::shuffle(xs.begin(), x, random_generator);
-	for(auto x = xs.cbegin(); x != xend; ++x) {
-		set(i, *x);
+		set(i, x);
 		count = solution_count(i + 1, count);
 		if(count > 1) break;
 	}

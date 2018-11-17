@@ -61,8 +61,10 @@ bool Display::handle_input(int k) {
 			}
 			break;
 		case key::erase:
-			guess.set(cursor_row, cursor_col, 0);
-			board_changed = true;
+			if(clues.get(cursor_row, cursor_col) == 0) {
+				guess.set(cursor_row, cursor_col, 0);
+				board_changed = true;
+			}
 			break;
 		case key::restart:
 			reset();
@@ -72,9 +74,11 @@ bool Display::handle_input(int k) {
 			break;
 		default:
 			if('1' <= k && k <= '9') {
-				guess.set(cursor_row, cursor_col, k - '0');
+				if(clues.get(cursor_row, cursor_col) == 0) {
+					guess.set(cursor_row, cursor_col, k - '0');
+					board_changed = true;
+				}
 			}
-			board_changed = true;
 			break;
 	}
 	return false;

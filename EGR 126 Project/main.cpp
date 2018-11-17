@@ -1,9 +1,6 @@
 #include <string>
-#include <fstream>
 #include <chrono>
-#include "Board.h"
 #include "Display.h"
-
 
 int main(int argc, char* argv[]) {
 	Display d;

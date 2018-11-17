@@ -63,9 +63,9 @@ void setup_window(const std::string & title, int width, int height) {
 	// set title
 	SetConsoleTitle(title.c_str());
 	// set window size
-	SMALL_RECT window_size = { 0, 0, width - 1, height - 1 };
+	SMALL_RECT window_size = { 0, 0, static_cast<SHORT>(width - 1), static_cast<SHORT>(height - 1) };
 	SetConsoleWindowInfo(output_handle, TRUE, &window_size);
-	COORD buffer_size = { width, height };
+	COORD buffer_size = { static_cast<SHORT>(width), static_cast<SHORT>(height) };
 	SetConsoleScreenBufferSize(output_handle, buffer_size);
 	DWORD attrs_written;
 	WORD attr = foreground_color | background_color;

@@ -31,13 +31,13 @@ public:
 	
 	static Board random();
 
-private:
 	static int row_col_to_index(int row, int col);
 	static std::pair<int, int> index_to_row_col(int index);
 
 	static int box_number_to_index(int box, int box_idx);
 	static std::pair<int, int> index_to_box_number(int index);
 
+private:
 	int solution_count(int i = 0, int count = 0);
 	bool fill_board(int i = 0);
 

@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "DLX.h"
 #include <stdexcept>
 #include <array>
 #include <numeric>
@@ -129,6 +130,9 @@ bool Board::fill_board(int i) {
 }
 
 int Board::solution_count(int i, int count) {
+	DLX x{ *this };
+	return x.search(2).size();
+	/*
 	if(i == max_index) {
 		return count + 1;
 	}
@@ -156,6 +160,7 @@ int Board::solution_count(int i, int count) {
 	}
 	set(i, 0);
 	return count;
+	*/
 }
 
 int Board::row_col_to_index(int row, int col) {

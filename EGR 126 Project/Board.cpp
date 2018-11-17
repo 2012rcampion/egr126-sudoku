@@ -28,24 +28,67 @@ bool Board::solved() const {
 
 	//Check duplicate numbers on each row:
 	for(int row = 0; row < size; row++) {
-		int flag = 0;
-
-		for(int col = 0; col < size; col++) {
-			if(flag & bit(get(row, col))) {
-				return false;
-			}
-			else {
-				flag |= bit(get(row, col));
-			}
+		if (check_row(row) == false) {
+			return false;
 		}
 	}
 
 	//Check duplicate numbers on each column:
 	for(int col = 0; col < size; col++) {
-		int flag = 0;
+		if (check_col(col) == false) {
+			return false;
+		}
+	}
 
-		for(int row = 0; row < size; row++) {
-			if(flag & bit(get(row, col))) {
+	//Check duplicate numbers on each box:
+	for(int box = 0; box < size; ++box) {
+		if (check_box(box) == false) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Board::check_row(int row) const
+{
+	int flag = 0;
+
+	for (int col = 0; col < size; col++) {
+		if (flag & bit(get(row, col))) {
+			return false;
+		}
+		else {
+			flag |= bit(get(row, col));
+		}
+	}
+	return true;
+}
+
+bool Board::check_col(int col) const
+{
+	int flag = 0;
+
+	for (int row = 0; row < size; row++) {
+		if (flag & bit(get(row, col))) {
+			return false;
+		}
+		else {
+			flag |= bit(get(row, col));
+		}
+	}
+	return true;
+}
+
+bool Board::check_box(int box) const
+{
+	auto rowcol = index_to_row_col(box_number_to_index(box, 0));
+	int box_row = rowcol.first;
+	int box_col = rowcol.second;
+	int flag = 0;
+	for (int row = box_row; row < box_row + box_size; box_row++) {
+		for (int col = box_col; col < box_col + box_size; box_col++) {
+			if (flag & bit(get(row, col))) {
 				return false;
 			}
 			else {
@@ -53,24 +96,6 @@ bool Board::solved() const {
 			}
 		}
 	}
-
-	//Check duplicate numbers on each box:
-	for(int box_row = 0; box_row < size; box_row += box_size) {
-		for(int box_col = 0; box_col < size; box_col += box_size) {
-			int flag = 0;
-			for(int row = box_row; row < box_row + box_size; box_row++) {
-				for(int col = box_col; col < box_col + box_size; box_col++) {
-					if(flag & bit(get(row, col))) {
-						return false;
-					}
-					else {
-						flag |= bit(get(row, col));
-					}
-				}
-			}
-		}
-	}
-
 	return true;
 }
 

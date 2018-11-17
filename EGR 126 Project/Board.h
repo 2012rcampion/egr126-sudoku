@@ -28,6 +28,9 @@ public:
 	void set_box(int box, int box_idx, int value);
 
 	bool solved() const;
+	bool check_row(int row) const;
+	bool check_col(int col) const;
+	bool check_box(int box) const;
 	
 	static Board random();
 

@@ -28,21 +28,21 @@ bool Board::solved() const {
 
 	//Check duplicate numbers on each row:
 	for(int row = 0; row < size; row++) {
-		if (check_row(row) == false) {
+		if(check_row(row) == false) {
 			return false;
 		}
 	}
 
 	//Check duplicate numbers on each column:
 	for(int col = 0; col < size; col++) {
-		if (check_col(col) == false) {
+		if(check_col(col) == false) {
 			return false;
 		}
 	}
 
 	//Check duplicate numbers on each box:
 	for(int box = 0; box < size; ++box) {
-		if (check_box(box) == false) {
+		if(check_box(box) == false) {
 			return false;
 		}
 	}
@@ -50,8 +50,7 @@ bool Board::solved() const {
 	return true;
 }
 
-bool Board::check_row(int row) const
-{
+bool Board::check_row(int row) const {
 	int flag = 0;
 
 	for (int col = 0; col < size; col++) {
@@ -65,8 +64,7 @@ bool Board::check_row(int row) const
 	return true;
 }
 
-bool Board::check_col(int col) const
-{
+bool Board::check_col(int col) const {
 	int flag = 0;
 
 	for (int row = 0; row < size; row++) {
@@ -80,21 +78,15 @@ bool Board::check_col(int col) const
 	return true;
 }
 
-bool Board::check_box(int box) const
-{
-	auto rowcol = index_to_row_col(box_number_to_index(box, 0));
-	int box_row = rowcol.first;
-	int box_col = rowcol.second;
+bool Board::check_box(int box) const {
 	int flag = 0;
-	for (int row = box_row; row < box_row + box_size; box_row++) {
-		for (int col = box_col; col < box_col + box_size; box_col++) {
-			if (flag & bit(get(row, col))) {
+	for (int boxnum = 0; boxnum < size; boxnum++) {
+			if (flag & bit(get_box(box, boxnum))) {
 				return false;
 			}
 			else {
-				flag |= bit(get(row, col));
+				flag |= bit(get_box(box, boxnum));
 			}
-		}
 	}
 	return true;
 }

@@ -75,8 +75,16 @@ bool Display::handle_input(int k) {
 		default:
 			if('1' <= k && k <= '9') {
 				if(clues.get(cursor_row, cursor_col) == 0) {
+					int previous_guess = guess.get(cursor_row, cursor_col);
 					guess.set(cursor_row, cursor_col, k - '0');
-					board_changed = true;
+					if(guess.check_row(cursor_row) &&
+					   guess.check_col(cursor_col) &&
+					   guess.check_box(Board::row_col_to_box_number(cursor_row, cursor_col))) {
+						board_changed = true;
+					}
+					else {
+						guess.set(cursor_row, cursor_col, previous_guess);
+					}
 				}
 			}
 			break;

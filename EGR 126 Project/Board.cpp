@@ -219,6 +219,10 @@ std::pair<int, int> Board::index_to_box_number(int index) {
 	return { box, box_idx };
 }
 
+int Board::row_col_to_box_number(int row, int col) {
+	return index_to_box_number(row_col_to_index(row, col)).first;
+}
+
 int Board::get(int index) const {
 	return numbers.at(index);
 }

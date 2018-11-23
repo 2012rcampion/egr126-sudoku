@@ -2,6 +2,7 @@
 #define DRAWING_H
 
 void draw_board();
+void draw_win();
 
 void draw_time(int seconds);
 

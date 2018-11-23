@@ -18,6 +18,21 @@ void draw_board() {
 	}
 }
 
+void draw_win() {
+	std::string line;
+	std::ifstream template_file("template_win.txt");
+	for(int row = 10; template_file; ++row) {
+		line.clear();
+		std::getline(template_file, line);
+		write_string(line, 6, row);
+		int format = format::not_inverted | format::not_bold;
+		for(int col = 6; col < 6 + line.size(); ++col) {
+			format_character(format, col, row);
+		}
+	}
+}
+
+
 void draw_time(int seconds) {
 	const int max_seconds = 100 * 60 - 1;
 	if(seconds > max_seconds) {

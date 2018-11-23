@@ -1,17 +1,18 @@
 #include "Display.h"
 
-Display::Display() : cursor_row(0), cursor_col(0), board_changed(true), cursor_moved(true) {
+Display::Display() : cursor_row(0), cursor_col(0), board_changed(true), cursor_moved(true), solved(false) {
 	const int height = 25;
 	const int width = 39;
 	setup_window("Sudoku", width, height);
-	draw_board();
 	new_game();
 }
 
 void Display::draw() {
+	if(board_changed) {
+		solved = guess.solved();
+	}
 	if(cursor_moved) {
 		draw_cursor(cursor_row, cursor_col);
-		cursor_moved = false;
 	}
 	if(board_changed || cursor_moved) {
 		int selection = guess.get(cursor_row, cursor_col);
@@ -23,13 +24,19 @@ void Display::draw() {
 					c = value + '0';
 				}
 				draw_cell(c, row, col, clues.get(row, col) != 0);
-				highlight_cell(row, col, selection != 0 && value == selection);
+				highlight_cell(row, col, selection != 0 && value == selection && !solved);
 			}
 		}
-		board_changed = false;
 	}
-	int seconds = std::chrono::ceil<std::chrono::seconds>(clock::now() - start_time).count();
-	draw_time(seconds);
+	cursor_moved = false;
+	board_changed = false;
+	if(solved) {
+		draw_win();
+	}
+	else {
+		int seconds = std::chrono::floor<std::chrono::seconds>(clock::now() - start_time).count();
+		draw_time(seconds);
+	}
 }
 
 bool Display::handle_input(int k) {
@@ -61,7 +68,7 @@ bool Display::handle_input(int k) {
 			}
 			break;
 		case key::erase:
-			if(clues.get(cursor_row, cursor_col) == 0) {
+			if(clues.get(cursor_row, cursor_col) == 0 && !solved) {
 				guess.set(cursor_row, cursor_col, 0);
 				board_changed = true;
 			}
@@ -74,7 +81,7 @@ bool Display::handle_input(int k) {
 			break;
 		default:
 			if('1' <= k && k <= '9') {
-				if(clues.get(cursor_row, cursor_col) == 0) {
+				if(clues.get(cursor_row, cursor_col) == 0 && !solved) {
 					int previous_guess = guess.get(cursor_row, cursor_col);
 					guess.set(cursor_row, cursor_col, k - '0');
 					if(guess.check_row(cursor_row) &&
@@ -95,6 +102,8 @@ bool Display::handle_input(int k) {
 void Display::reset() {
 	guess = clues;
 	board_changed = true;
+	solved = false;
+	draw_board();
 }
 
 void Display::new_game() {

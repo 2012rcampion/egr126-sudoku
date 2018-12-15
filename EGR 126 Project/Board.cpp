@@ -25,7 +25,6 @@ bool Board::solved() const {
 		}
 	}
 
-
 	//Check duplicate numbers on each row:
 	for(int row = 0; row < size; row++) {
 		if(check_row(row) == false) {

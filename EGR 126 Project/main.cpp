@@ -1,9 +1,5 @@
-#include <string>
-#include <fstream>
-#include <chrono>
-#include "Board.h"
 #include "Display.h"
-
+#include "console_io.h"
 
 int main(int argc, char* argv[]) {
 	Display d;

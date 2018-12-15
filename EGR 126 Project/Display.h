@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Board.h"
-#include "drawing.h"
-#include "console_io.h"
 #include <chrono>
 
 class Display {
